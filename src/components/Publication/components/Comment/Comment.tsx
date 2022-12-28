@@ -9,6 +9,7 @@ import {
   Paper
 } from '@mui/material'
 import React, { useState } from 'react'
+import { useAppSelector } from '../../../../app/hooks'
 import { IComment } from '../../../../models'
 import { formatDate } from '../../../../utils'
 import { useGetCommentOptions } from '../../hooks'
@@ -25,9 +26,10 @@ function Comment({ comment }: ICommentProps): JSX.Element {
     null
   )
 
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
+
   const commentatorOptions = useGetCommentatorOptions(comment.commentator)
 
-  // TODO: Replace "3" with logged user id
   const commentOptions = useGetCommentOptions(comment.commentator.id)
 
   const handleOpenCommentatorOptions = (
@@ -85,41 +87,47 @@ function Comment({ comment }: ICommentProps): JSX.Element {
             {formatDate(comment.commentator.createdAt)}
           </Typography>
         </Box>
-        <IconButton onClick={handleOpenCommentOptions}>
-          <MoreVert />
-        </IconButton>
+        {isAuthenticated && (
+          <IconButton onClick={handleOpenCommentOptions}>
+            <MoreVert />
+          </IconButton>
+        )}
       </Box>
-      <Menu
-        anchorEl={anchorCommentatorEl}
-        open={Boolean(anchorCommentatorEl)}
-        onClose={handleCloseCommentatorOptions}
-      >
-        {commentatorOptions.map((option) => (
-          <MenuItem
-            key={`menu-item-commentator-menu-${option.text}`}
-            onClick={() => option.onClick(comment.commentator)}
-          >
-            {option.text}
-          </MenuItem>
-        ))}
-      </Menu>
-      <Menu
-        anchorEl={anchorCommentEl}
-        open={Boolean(anchorCommentEl)}
-        onClose={handleCloseCommentOptions}
-      >
-        {commentOptions.map((option) => (
-          <MenuItem
-            key={`menu-item-comment-menu-${option.text}`}
-            onClick={() => {
-              option.onClick(comment)
-              handleCloseCommentOptions()
-            }}
-          >
-            {option.text}
-          </MenuItem>
-        ))}
-      </Menu>
+      {isAuthenticated && (
+        <Menu
+          anchorEl={anchorCommentatorEl}
+          open={Boolean(anchorCommentatorEl)}
+          onClose={handleCloseCommentatorOptions}
+        >
+          {commentatorOptions.map((option) => (
+            <MenuItem
+              key={`menu-item-commentator-menu-${option.text}`}
+              onClick={() => option.onClick(comment.commentator)}
+            >
+              {option.text}
+            </MenuItem>
+          ))}
+        </Menu>
+      )}
+      {isAuthenticated && (
+        <Menu
+          anchorEl={anchorCommentEl}
+          open={Boolean(anchorCommentEl)}
+          onClose={handleCloseCommentOptions}
+        >
+          {commentOptions.map((option) => (
+            <MenuItem
+              key={`menu-item-comment-menu-${option.text}`}
+              onClick={() => {
+                option.onClick(comment)
+                handleCloseCommentOptions()
+              }}
+            >
+              {option.text}
+            </MenuItem>
+          ))}
+        </Menu>
+      )}
       <Typography
         sx={{
           padding: '10px',

@@ -86,7 +86,9 @@ export async function serviceCreateComment(
         body: JSON.stringify({ comment: dto.comment })
       }
     )
-    const data = await checkError<TCommentResponse>(response)
+    const data = await checkError<TCommentResponse>(response, {
+      418: 'Debes verificar tu correo para poder comentar'
+    })
     result = mapOneComment(data)
   } catch (err) {
     error = err as Error

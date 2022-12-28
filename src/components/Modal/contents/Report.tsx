@@ -1,13 +1,16 @@
 import { Box, Typography } from '@mui/material'
-import { useAppDispatch, useAppSelector } from '../../../app/hooks'
+import { useAppDispatch } from '../../../app/hooks'
 import { StandardButton } from '../../StandardButton'
 import { TextArea } from '../../TextArea'
-import { closeModal, setModalMetadata } from '../redux/modalSlice'
+import { closeModal } from '../redux/modalSlice'
 import { useState } from 'react'
-function Report(): JSX.Element {
-  const dispatch = useAppDispatch()
-  const metadata = useAppSelector((state) => state.modal.metadata)
 
+interface IReportProps {
+  cb: () => void
+}
+
+function Report({ cb }: IReportProps): JSX.Element {
+  const dispatch = useAppDispatch()
   const [comment, setComment] = useState('')
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
@@ -15,15 +18,7 @@ function Report(): JSX.Element {
   }
 
   const handleReport = (): void => {
-    console.log(metadata)
-    if (metadata.projectId !== undefined) {
-      // TODO: Report proyect
-    } else if (metadata.userId !== undefined) {
-      // TODO: Report user
-    } else if (metadata.commentId !== undefined) {
-      // TODO: Report comment
-    }
-    dispatch(setModalMetadata({}))
+    cb()
     dispatch(closeModal())
   }
 

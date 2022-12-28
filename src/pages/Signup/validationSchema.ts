@@ -32,7 +32,7 @@ export const validationSchema = Yup.object().shape({
   password: Yup.string()
     .min(8, 'Al menos 8 carácteres')
     .matches(
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}/,
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}/,
       'Un carácter especial y un número'
     )
     .required('Campo requerido'),

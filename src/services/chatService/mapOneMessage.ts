@@ -10,6 +10,7 @@ export function mapOneMessage(m: TMessageResponse): IMessageOutput {
     title: m.sender.userName,
     text: m.message,
     position: userId === m.senderId ? 'right' : 'left',
-    date: m.createdAt
+    date: m.createdAt,
+    read: m.read
   }
 }

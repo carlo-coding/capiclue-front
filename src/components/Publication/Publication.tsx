@@ -37,6 +37,8 @@ function Publication(publication: IPublication): JSX.Element {
   const { id, author, content, createdAt, images = [] } = publication
   const userInfo = useAppSelector((state) => state.user.info)
 
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
+
   const dispatch = useAppDispatch()
 
   const [commentIndex, setCommentIndex] = useState(1)
@@ -116,7 +118,7 @@ function Publication(publication: IPublication): JSX.Element {
           <IconButton onClick={handleOpenAuthorOptions}>
             <Avatar src={author?.avatar?.urlString} alt="author avatar" />
           </IconButton>
-          {author.id !== userInfo?.id && (
+          {author.id !== userInfo?.id && isAuthenticated && (
             <Menu
               anchorEl={anchorAuthorEl}
               open={Boolean(anchorAuthorEl)}
@@ -138,9 +140,11 @@ function Publication(publication: IPublication): JSX.Element {
           <Typography>{author?.userName}</Typography>
         </Box>
 
-        <IconButton onClick={handleOpenPublicationOptions}>
-          <MoreVertIcon />
-        </IconButton>
+        {isAuthenticated && (
+          <IconButton onClick={handleOpenPublicationOptions}>
+            <MoreVertIcon />
+          </IconButton>
+        )}
         <Menu
           anchorEl={anchorPublicationEl}
           open={Boolean(anchorPublicationEl)}
@@ -182,7 +186,7 @@ function Publication(publication: IPublication): JSX.Element {
           marginTop: 4
         }}
       >
-        <MakeComment publicationId={id} />
+        {isAuthenticated && <MakeComment publicationId={id} />}
         {showComments &&
           comments?.map((comment) => (
             <Comment

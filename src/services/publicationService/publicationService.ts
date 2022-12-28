@@ -48,7 +48,9 @@ export async function serviceCreatePublication(
         body: JSON.stringify({ content: dto.content })
       }
     )
-    const data = await checkError<TPublicationResponse>(response)
+    const data = await checkError<TPublicationResponse>(response, {
+      418: 'Debes verificar tu correo para poder crear una publicación'
+    })
     const [imagesResponse, imagesError] = await serviceUploadPublicationImages({
       files: dto.images,
       publicationId: data.data.publication.id as number

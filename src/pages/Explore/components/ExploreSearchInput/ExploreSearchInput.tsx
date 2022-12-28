@@ -1,6 +1,7 @@
 import { TextField, Tabs, Tab, IconButton } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import React, { useState } from 'react'
+import { useGetOptions } from '../ExploreSidebar/hooks/useGetOptions'
 
 interface IExploreSearchInputProps {
   setSearch: (s: string) => void
@@ -9,7 +10,7 @@ interface IExploreSearchInputProps {
 function ExploreSearchInput({
   setSearch
 }: IExploreSearchInputProps): JSX.Element {
-  const options = ['Para ti', 'Siguiendo', 'Popular', 'Favoritos']
+  const options = useGetOptions()
 
   const [valueTab, setValueTab] = useState(0)
   const handleChangeTabs = (
@@ -83,8 +84,9 @@ function ExploreSearchInput({
       >
         {options.map((option, index) => (
           <Tab
-            label={option}
-            key={`mobile-tab-${option}`}
+            label={option.text}
+            onClick={option.onClick}
+            key={`mobile-tab-${option.text}`}
             sx={{
               padding: '5px',
               fontSize: '12px'

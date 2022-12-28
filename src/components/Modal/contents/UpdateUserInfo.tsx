@@ -4,7 +4,7 @@ import TextField from '@mui/material/TextField/TextField'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
-import { updateUser } from '../../../features'
+import { resetPassword, updateUser } from '../../../features'
 import { formatInputDate, isOverEighteen } from '../../../utils'
 import { StandardButton } from '../../StandardButton'
 
@@ -41,6 +41,10 @@ function UpdateUserInfo(): JSX.Element {
 
   const handleFormSubmit = (data: TFormUpdateUserValues): void => {
     dispatch(updateUser(data))
+  }
+
+  const handleResetPassword = (): void => {
+    dispatch(resetPassword())
   }
 
   return (
@@ -139,6 +143,7 @@ function UpdateUserInfo(): JSX.Element {
                   <StandardButton
                     type="button"
                     sx={{ fontSize: '14px', padding: '4px 0' }}
+                    onClick={handleResetPassword}
                   >
                     Click aqui para cambiar contraseña
                   </StandardButton>

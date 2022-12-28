@@ -5,9 +5,9 @@ import { useState, useRef, useEffect } from 'react'
 import { ImageLayout } from '../../Publication'
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined'
 import { enqueueSnackbar } from 'notistack'
-import { useAppDispatch, useAppSelector } from '../../../app/hooks'
+import { useAppDispatch } from '../../../app/hooks'
 import { postPublication, updatePublication } from '../../../features'
-import { IImageModel } from '../../../models'
+import { IImageModel, IPublication } from '../../../models'
 import { urlToFile } from '../../../utils/urlToFile'
 
 interface IPublicationImage {
@@ -15,10 +15,13 @@ interface IPublicationImage {
   url: string
 }
 
-function MakePublication(): JSX.Element {
-  const publication = useAppSelector(
-    (state) => state.modal.metadata.publication
-  )
+interface IMakePublicationProps {
+  publication?: IPublication
+}
+
+function MakePublication({
+  publication = undefined
+}: IMakePublicationProps): JSX.Element {
   const isEdititionMode = publication !== undefined
 
   const dispatch = useAppDispatch()
@@ -30,7 +33,7 @@ function MakePublication(): JSX.Element {
 
   useEffect(() => {
     if (!isEdititionMode) return
-    setContent(publication.content as string)
+    setContent(publication.content)
     async function getFileObjects(): Promise<void> {
       const defaultImages = await Promise.all(
         (publication?.images as IImageModel[]).map(async (img) => ({
@@ -90,7 +93,7 @@ function MakePublication(): JSX.Element {
         updatePublication({
           content,
           images: files,
-          publicationId: publication.id as number
+          publicationId: publication.id
         })
       )
       return

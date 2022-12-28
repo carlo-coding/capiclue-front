@@ -1,8 +1,13 @@
 import { AnyAction, Dispatch } from '@reduxjs/toolkit'
 import { enqueueSnackbar } from 'notistack'
-import { PrivateRoutes, PublicRoutes } from '../../models'
+import { PublicRoutes } from '../../models'
 import { TFormLoginValues, TFormSignupValues } from '../../pages'
-import { serviceGoogleLogin, serviceLogin, serviceSignup } from '../../services'
+import {
+  serviceGoogleLogin,
+  serviceLogin,
+  serviceResetPassword,
+  serviceSignup
+} from '../../services'
 import { redirectTo } from '../../utils'
 import { setUserInfo } from '../user/userSlice'
 import { setAuthState } from './authSlice'
@@ -27,7 +32,7 @@ export const authLogin = (payload: TFormLoginValues): AnyAction => {
     }
     dispatch(setAuthState(response.data.token))
     dispatch(setUserInfo(response.data.user))
-    redirectTo(`/${PrivateRoutes.PRIVATE}/${PrivateRoutes.EXPLORE}`)
+    redirectTo(`/${PublicRoutes.EXPLORE}`)
   }) as unknown as AnyAction
 }
 
@@ -40,6 +45,19 @@ export const googleLogin = (credential?: string): AnyAction => {
     }
     dispatch(setAuthState(response.data.token))
     dispatch(setUserInfo(response.data.user))
-    redirectTo(`/${PrivateRoutes.PRIVATE}/${PrivateRoutes.EXPLORE}`)
+    redirectTo(`/${PublicRoutes.EXPLORE}`)
+  }) as unknown as AnyAction
+}
+
+export const resetPassword = (): AnyAction => {
+  return (async () => {
+    const [, error] = await serviceResetPassword()
+    if (error !== null) {
+      enqueueSnackbar(error.message, { variant: 'error' })
+      return
+    }
+    enqueueSnackbar('Se te ha mandado un email para cambiar tu contraseña', {
+      variant: 'success'
+    })
   }) as unknown as AnyAction
 }

@@ -1,11 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { deleteCookie, getCookie, redirectTo, setCookie } from '../../utils'
+import { IUser } from '../../models'
+import {
+  deleteCookie,
+  getCookie,
+  parseJson,
+  redirectTo,
+  setCookie
+} from '../../utils'
 interface IAuthState {
   token: string
+  isAuthenticated: boolean
 }
 
 const getInitialAuthState = (): IAuthState => ({
-  token: getCookie('token')
+  token: getCookie('token'),
+  isAuthenticated: parseJson<IUser>(getCookie('user')).id !== undefined
 })
 
 const authSlice = createSlice({
@@ -17,7 +26,7 @@ const authSlice = createSlice({
       setCookie('token', action.payload)
     },
     logout(state) {
-      state = { token: '' }
+      state = { token: '', isAuthenticated: false }
       deleteCookie('token')
       deleteCookie('user')
       redirectTo('/')

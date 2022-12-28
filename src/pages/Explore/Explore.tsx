@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { Layout, LazyLoad, Publication } from '../../components'
 import { getPublications } from '../../features'
+import { IPublication } from '../../models'
 import { useQuery, validateSectionQuery } from '../../utils'
 import { ExploreSearchInput, ExploreSidebar } from './components'
 
@@ -39,7 +40,7 @@ function Explore(): JSX.Element {
             alignItems: 'center'
           }}
         >
-          <ExploreSearchInput search={search} setSearch={setSearch} />
+          <ExploreSearchInput setSearch={setSearch} />
 
           <Box
             sx={{
@@ -75,8 +76,8 @@ function Explore(): JSX.Element {
               >
                 {publications?.map((publication) => (
                   <Publication
-                    {...publication}
-                    key={`explore-publication-${publication.id}`}
+                    {...(publication as IPublication)}
+                    key={`explore-publication-${publication.id as number}`}
                   ></Publication>
                 ))}
               </LazyLoad>

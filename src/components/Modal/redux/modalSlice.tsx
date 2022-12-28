@@ -1,17 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import React from 'react'
-import { TModalMetadata } from '../../../models'
 
 interface IModalState {
   open: boolean
   content: React.ReactElement
-  metadata: TModalMetadata
 }
 
 const modalState: IModalState = {
   open: false,
-  content: <></>,
-  metadata: {}
+  content: <></>
 }
 
 const modalSlice = createSlice({
@@ -23,17 +20,13 @@ const modalSlice = createSlice({
     },
     closeModal(state) {
       state.open = false
-      state.metadata = {}
+      state.content = <></>
     },
     setModalContent(state, action: PayloadAction<React.ReactElement>) {
       state.content = action.payload
-    },
-    setModalMetadata(state, action: PayloadAction<TModalMetadata>) {
-      state.metadata = action.payload
     }
   }
 })
 
-export const { closeModal, openModal, setModalContent, setModalMetadata } =
-  modalSlice.actions
+export const { closeModal, openModal, setModalContent } = modalSlice.actions
 export default modalSlice.reducer

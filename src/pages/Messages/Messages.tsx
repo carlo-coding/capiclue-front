@@ -12,7 +12,12 @@ import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from '../../utils'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { getChatlist, getMessages, initChat } from '../../features'
+import {
+  getChatlist,
+  getMessages,
+  initChat,
+  readMessages
+} from '../../features'
 import { sendMessage } from '../../features/chat/chatSlice'
 import { IMessageOutput } from '../../services'
 import { useUpdateEffect } from '../../utils/useUpdateEffect'
@@ -67,10 +72,19 @@ function Messages(): JSX.Element {
     const scrollHeight = messagesRef.current?.scrollHeight
     const height = messagesRef.current?.clientHeight
     const maxScrollTop = scrollHeight - height
-    if (messagesScroll > maxScrollTop - 200) {
+    if (messagesScroll > maxScrollTop - 300) {
       messagesRef.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0
     } else {
       messagesRef.current.scrollTop += 150
+    }
+
+    if (messages.length > 0) {
+      dispatch(
+        readMessages({
+          friendId,
+          messagesIds: messages.filter((msg) => !msg.read).map((msg) => msg.id)
+        })
+      )
     }
   }, [messages.length])
 

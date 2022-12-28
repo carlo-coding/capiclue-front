@@ -3,11 +3,7 @@ import { deleteComment } from '../../../features'
 import { setCommentEditContent } from '../../../features/comment/commentSlice'
 import { IComment, IOption } from '../../../models'
 import { Report, UserConfirm } from '../../Modal'
-import {
-  openModal,
-  setModalContent,
-  setModalMetadata
-} from '../../Modal/redux/modalSlice'
+import { openModal, setModalContent } from '../../Modal/redux/modalSlice'
 
 export const useGetCommentOptions = (commentatorId?: number): IOption[] => {
   const dispatch = useAppDispatch()
@@ -51,8 +47,7 @@ export const useGetCommentOptions = (commentatorId?: number): IOption[] => {
     {
       text: 'Reportar',
       onClick: (commentId: number): void => {
-        dispatch(setModalMetadata({ commentId }))
-        dispatch(setModalContent(<Report />))
+        dispatch(setModalContent(<Report cb={() => {}} />))
         dispatch(openModal())
       }
     }

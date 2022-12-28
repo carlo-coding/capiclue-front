@@ -1,12 +1,8 @@
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import { addPublicationToFavorites, deletePublication } from '../../../features'
-import { IOption, TPublicationPartial } from '../../../models'
+import { IOption, IPublication, TPublicationPartial } from '../../../models'
 import { MakePublication, Report, UserConfirm } from '../../Modal'
-import {
-  openModal,
-  setModalContent,
-  setModalMetadata
-} from '../../Modal/redux/modalSlice'
+import { openModal, setModalContent } from '../../Modal/redux/modalSlice'
 
 export const useGetPublicationOptions = (authorId: number): IOption[] => {
   const dispatch = useAppDispatch()
@@ -35,8 +31,11 @@ export const useGetPublicationOptions = (authorId: number): IOption[] => {
       {
         text: 'Editar',
         onClick: (publication: TPublicationPartial): void => {
-          dispatch(setModalContent(<MakePublication />))
-          dispatch(setModalMetadata({ publication }))
+          dispatch(
+            setModalContent(
+              <MakePublication publication={publication as IPublication} />
+            )
+          )
           dispatch(openModal())
         }
       }
@@ -52,8 +51,7 @@ export const useGetPublicationOptions = (authorId: number): IOption[] => {
       {
         text: 'Reportar',
         onClick: (publication: TPublicationPartial): void => {
-          dispatch(setModalMetadata({ publicationId: publication.id }))
-          dispatch(setModalContent(<Report />))
+          dispatch(setModalContent(<Report cb={() => {}} />))
           dispatch(openModal())
         }
       }

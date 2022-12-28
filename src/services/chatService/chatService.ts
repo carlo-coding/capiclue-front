@@ -31,6 +31,7 @@ export interface IMessageOutput {
   text: string
   position: 'left' | 'right'
   date: string
+  read: boolean
 }
 
 export type TMessagesOutput = IPaginatedResults<IMessageOutput>

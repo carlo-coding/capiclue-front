@@ -1,6 +1,6 @@
-import { IImageModel, IUser } from '../../models'
+import { ICommonServiceResponse, IImageModel, IUser } from '../../models'
 import { TFormLoginValues, TFormSignupValues } from '../../pages'
-import { checkError } from '../../utils'
+import { checkError, getCookie } from '../../utils'
 import { mapUserInfo } from '../userService'
 import { AuthServiceEndpoints } from './endpoints'
 
@@ -29,7 +29,9 @@ export async function serviceSignup(
         'Content-Type': 'application/json'
       }
     })
-    result = await checkError<IAuthSignupResponse>(resp)
+    result = await checkError<IAuthSignupResponse>(resp, {
+      400: 'El usuario ya éxiste'
+    })
   } catch (err) {
     error = err as Error
   }
@@ -65,7 +67,8 @@ export async function serviceLogin(
       }
     })
     const data = await checkError<IAuthLoginResponse>(response, {
-      404: 'Usuario no encontrado'
+      404: 'Usuario no encontrado',
+      403: 'Contraseña o usuario incorrecto'
     })
     result = {
       data: {
@@ -101,6 +104,30 @@ export async function serviceGoogleLogin(
         token: data.data.token
       }
     }
+  } catch (err) {
+    error = err as Error
+  }
+  return [result, error]
+}
+
+export async function serviceResetPassword(): Promise<
+  [ICommonServiceResponse | null, Error | null]
+> {
+  let result: ICommonServiceResponse | null = null
+  let error: Error | null = null
+  try {
+    const token = getCookie('token')
+    const response = await fetch(
+      `${apiUrl}${AuthServiceEndpoints.RESET_PASSWORD}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+    result = await checkError<ICommonServiceResponse>(response)
   } catch (err) {
     error = err as Error
   }

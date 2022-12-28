@@ -33,6 +33,7 @@ export const readNotifications = (notificationIds: number[]): AnyAction => {
     }
     if (response === null) return
     dispatch(changeNotificationReadState(notificationIds))
+    dispatch(getCounts())
   }) as unknown as AnyAction
 }
 

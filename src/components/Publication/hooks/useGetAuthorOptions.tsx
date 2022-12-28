@@ -3,11 +3,7 @@ import { useAppDispatch } from '../../../app/hooks'
 import { sendFriendRequest } from '../../../features'
 import { IOption, PrivateRoutes, TUserPartial } from '../../../models'
 import { Report } from '../../Modal'
-import {
-  openModal,
-  setModalContent,
-  setModalMetadata
-} from '../../Modal/redux/modalSlice'
+import { openModal, setModalContent } from '../../Modal/redux/modalSlice'
 
 export const useGetAuthorOptions = (author: TUserPartial): IOption[] => {
   const dispatch = useAppDispatch()
@@ -27,8 +23,7 @@ export const useGetAuthorOptions = (author: TUserPartial): IOption[] => {
       {
         text: 'Reportar',
         onClick: (): void => {
-          dispatch(setModalMetadata({ userId: author.id }))
-          dispatch(setModalContent(<Report />))
+          dispatch(setModalContent(<Report cb={() => {}} />))
           dispatch(openModal())
         }
       }
@@ -44,8 +39,7 @@ export const useGetAuthorOptions = (author: TUserPartial): IOption[] => {
     {
       text: 'Reportar',
       onClick: (): void => {
-        dispatch(setModalMetadata({ userId: author.id }))
-        dispatch(setModalContent(<Report />))
+        dispatch(setModalContent(<Report cb={() => {}} />))
         dispatch(openModal())
       }
     }

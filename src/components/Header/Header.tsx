@@ -12,13 +12,14 @@ import {
   Popover,
   List
 } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { getNotifications } from '../../features'
-import { PrivateRoutes } from '../../models'
+import { getNotifications, readNotifications } from '../../features'
+import { PrivateRoutes, PublicRoutes } from '../../models'
 import { LazyLoad } from '../LazyLoad'
 import { Notification } from '../Notification'
+import { StandardButton } from '../StandardButton'
 import { ChatIcon, NotificationIcon, SettingsIcon } from '../SvgIcons'
 import { useGetSettings } from './hooks/useGetSettings'
 
@@ -47,6 +48,8 @@ function Header(): JSX.Element {
 
   const userInfo = useAppSelector((state) => state.user.info)
 
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
+
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>): void => {
     setAnchorElUser(event.currentTarget)
   }
@@ -62,6 +65,15 @@ function Header(): JSX.Element {
   const handleCloseNotifications = (): void => {
     setAnchorElNoti(null)
   }
+
+  useEffect(() => {
+    const notReadNotificationIds = notifications
+      .filter((n) => !n.read)
+      .map((n) => n.id)
+    if (notReadNotificationIds.length === 0) return
+    dispatch(readNotifications(notReadNotificationIds))
+  }, [notifications.length])
+
   return (
     <AppBar
       position="static"
@@ -88,9 +100,7 @@ function Header(): JSX.Element {
               border: 'none',
               cursor: 'pointer'
             }}
-            onClick={() =>
-              navigate(`/${PrivateRoutes.PRIVATE}/${PrivateRoutes.EXPLORE}`)
-            }
+            onClick={() => navigate(`/${PublicRoutes.EXPLORE}`)}
           >
             <Typography
               sx={{
@@ -102,105 +112,120 @@ function Header(): JSX.Element {
             </Typography>
           </Box>
 
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '30px'
-            }}
-          >
+          {isAuthenticated ? (
             <Box
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '2px'
+                gap: '30px'
               }}
             >
-              <IconButton
-                onClick={() =>
-                  navigate(
-                    `/${PrivateRoutes.PRIVATE}/${PrivateRoutes.MESSAGES}`
-                  )
-                }
-              >
-                <Badge color="error" badgeContent={unreadMessages} max={9}>
-                  <ChatIcon width={24} height={24} />
-                </Badge>
-              </IconButton>
-              <IconButton onClick={handleOpenNotifications}>
-                <Badge color="error" badgeContent={unreadNotifications} max={9}>
-                  <NotificationIcon width={26} height={26} />
-                </Badge>
-              </IconButton>
-              <IconButton
-                onClick={() => {
-                  navigate(
-                    `/${PrivateRoutes.PRIVATE}/${PrivateRoutes.SETTINGS}`
-                  )
-                }}
-              >
-                <SettingsIcon width={26} height={26} />
-              </IconButton>
-            </Box>
-            <IconButton onClick={handleOpenUserMenu}>
-              <Avatar
-                src={userInfo?.avatar?.urlString}
-                alt={userInfo?.userName}
-              />
-            </IconButton>
-            <Popover
-              id="Notifications-popover"
-              open={Boolean(anchorElNoti)}
-              anchorEl={anchorElNoti}
-              onClose={handleCloseNotifications}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left'
-              }}
-            >
-              <List
+              <Box
                 sx={{
-                  maxWidth: '250px'
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '2px'
                 }}
               >
-                <LazyLoad
-                  emptinessMessage="No hay notificationes"
-                  totalPages={totalNotifications}
-                  onEndReached={(page) => dispatch(getNotifications(page))}
+                <IconButton
+                  onClick={() =>
+                    navigate(
+                      `/${PrivateRoutes.PRIVATE}/${PrivateRoutes.MESSAGES}`
+                    )
+                  }
                 >
-                  {notifications.map((notification) => (
-                    <Notification {...notification} key={notification.id} />
-                  ))}
-                </LazyLoad>
-              </List>
-            </Popover>
-            <Menu
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left'
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right'
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem
-                  key={`id-menu-item-${setting.text}`}
+                  <Badge color="error" badgeContent={unreadMessages} max={9}>
+                    <ChatIcon width={24} height={24} />
+                  </Badge>
+                </IconButton>
+                <IconButton onClick={handleOpenNotifications}>
+                  <Badge
+                    color="error"
+                    badgeContent={unreadNotifications}
+                    max={9}
+                  >
+                    <NotificationIcon width={26} height={26} />
+                  </Badge>
+                </IconButton>
+                <IconButton
                   onClick={() => {
-                    setting.onClick()
-                    handleCloseUserMenu()
+                    navigate(
+                      `/${PrivateRoutes.PRIVATE}/${PrivateRoutes.SETTINGS}`
+                    )
                   }}
                 >
-                  {setting.text}
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+                  <SettingsIcon width={26} height={26} />
+                </IconButton>
+              </Box>
+              <IconButton onClick={handleOpenUserMenu}>
+                <Avatar
+                  src={userInfo?.avatar?.urlString}
+                  alt={userInfo?.userName}
+                />
+              </IconButton>
+              <Popover
+                id="Notifications-popover"
+                open={Boolean(anchorElNoti)}
+                anchorEl={anchorElNoti}
+                onClose={handleCloseNotifications}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left'
+                }}
+              >
+                <List
+                  sx={{
+                    maxWidth: '250px'
+                  }}
+                >
+                  <LazyLoad
+                    emptinessMessage="No hay notificationes"
+                    totalPages={totalNotifications}
+                    onEndReached={(page) => dispatch(getNotifications(page))}
+                  >
+                    {notifications.map((notification) => (
+                      <Notification {...notification} key={notification.id} />
+                    ))}
+                  </LazyLoad>
+                </List>
+              </Popover>
+              <Menu
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left'
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right'
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem
+                    key={`id-menu-item-${setting.text}`}
+                    onClick={() => {
+                      setting.onClick()
+                      handleCloseUserMenu()
+                    }}
+                  >
+                    {setting.text}
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          ) : (
+            <StandardButton
+              sx={{ width: '160px' }}
+              onClick={() => {
+                navigate(`/${PublicRoutes.SIGNUP}`)
+              }}
+            >
+              Crear una cuenta
+            </StandardButton>
+          )}
         </Toolbar>
       </Container>
     </AppBar>

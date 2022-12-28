@@ -13,6 +13,7 @@ import { SnackbarProvider } from 'notistack'
 
 const Signup = lazy(async () => await import('./pages/Signup/Signup'))
 const Login = lazy(async () => await import('./pages/Login/Login'))
+const Explore = lazy(async () => await import('./pages/Explore/Explore'))
 
 function App(): JSX.Element {
   return (
@@ -27,10 +28,11 @@ function App(): JSX.Element {
                 <RoutesWith404>
                   <Route
                     path="/"
-                    element={<Navigate to={PublicRoutes.SIGNUP} />}
+                    element={<Navigate to={PublicRoutes.EXPLORE} />}
                   />
                   <Route path={PublicRoutes.SIGNUP} element={<Signup />} />
                   <Route path={PublicRoutes.LOGIN} element={<Login />} />
+                  <Route path={PublicRoutes.EXPLORE} element={<Explore />} />
                   <Route element={<AuthGuard />}>
                     <Route
                       path={`${PrivateRoutes.PRIVATE}/*`}
