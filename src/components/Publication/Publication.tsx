@@ -11,59 +11,30 @@ import { IPublication } from '../../models'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { useGetAuthorOptions, useGetPublicationOptions } from './hooks'
 import React, { useState } from 'react'
-import { Comment, ImageLayout, MakeComment } from './components'
+import { AllComments, ImageLayout } from './components'
 import { formatDate } from '../../utils'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { getComments } from '../../features'
-
-function getCommentBtnText(
-  showComments: boolean,
-  commentsLength?: number,
-  totalComments?: number
-): [string, boolean, boolean] {
-  if (commentsLength === undefined || totalComments === undefined) {
-    return ['Mostrar comentarios', true, false]
-  } else if (totalComments === 0) {
-    return ['No hay comentarios que mostrar', false, false]
-  } else if (commentsLength < totalComments) {
-    return ['Mostrar más comentarios', true, false]
-  } else if (!showComments) {
-    return ['Mostrar comentarios', false, true]
-  }
-  return ['Ocultar comentarios', false, true]
-}
+import { CommentIcon, FlagIcon, HeartIcon } from '../SvgIcons'
+import { addPublicationToFavorites } from '../../features'
+import { openModal, Report, setModalContent } from '../Modal'
+import { makeReport } from '../../features/report/reportActions'
 
 function Publication(publication: IPublication): JSX.Element {
   const { id, author, content, createdAt, images = [] } = publication
-  const userInfo = useAppSelector((state) => state.user.info)
-
+  const [showComments, setShowComments] = useState(false)
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
-
-  const dispatch = useAppDispatch()
-
-  const [commentIndex, setCommentIndex] = useState(1)
-  const [showComments, setShowComments] = useState(true)
-
-  const comments = useAppSelector((state) => state.comment.memory[id]?.comments)
-  const totalComments = useAppSelector(
-    (state) => state.comment.memory[id]?.totalItems
-  )
-
-  const [commentBtnText, shouldFetchComments, shouldHideComments] =
-    getCommentBtnText(showComments, comments?.length, totalComments)
-
   const [anchorAuthorEl, setAnchorAuthorEl] = useState<null | HTMLElement>(null)
-
   const [anchorPublicationEl, setAnchorPublicationEl] =
     useState<null | HTMLElement>(null)
+  const isAuthor = useAppSelector((state) => state.user.info?.id === author?.id)
 
+  const dispatch = useAppDispatch()
   const handleOpenAuthorOptions = (e: React.MouseEvent<HTMLElement>): void => {
     setAnchorAuthorEl(e.currentTarget)
   }
   const handleCloseAuthorOptions = (): void => {
     setAnchorAuthorEl(null)
   }
-
   const handleOpenPublicationOptions = (
     e: React.MouseEvent<HTMLElement>
   ): void => {
@@ -72,31 +43,39 @@ function Publication(publication: IPublication): JSX.Element {
   const handleClosePublicationOptions = (): void => {
     setAnchorPublicationEl(null)
   }
-
-  const handleShowComments = (): void => {
-    if (shouldHideComments) {
-      setShowComments((prev) => !prev)
-      return
-    }
-    if (!shouldFetchComments) return
-    dispatch(
-      getComments({
-        publicationId: id,
-        page: commentIndex
-      })
-    )
-    setCommentIndex((prev) => prev + 1)
-  }
-
   const authorOptions = useGetAuthorOptions(author)
-  const publicationOption = useGetPublicationOptions(author?.id as number)
+  const publicationOption = useGetPublicationOptions(publication, isAuthor)
+
+  const handleAddToFavorites = () => {
+    dispatch(addPublicationToFavorites(id))
+  }
+  const handleReportPublication = () => {
+    dispatch(
+      setModalContent(
+        <Report
+          cb={(content) =>
+            dispatch(
+              makeReport({
+                content,
+                reportedPublicationId: id
+              })
+            )
+          }
+        />
+      )
+    )
+    dispatch(openModal())
+  }
   return (
     <Paper
       sx={{
         borderRadius: '10px',
         width: '100%',
         flexDirection: 'column',
-        padding: '20px',
+        padding: {
+          md: '20px 40px',
+          xs: '10px 20px'
+        },
         border: '1px solid',
         borderColor: 'layout.carolinaBlue'
       }}
@@ -118,7 +97,7 @@ function Publication(publication: IPublication): JSX.Element {
           <IconButton onClick={handleOpenAuthorOptions}>
             <Avatar src={author?.avatar?.urlString} alt="author avatar" />
           </IconButton>
-          {author.id !== userInfo?.id && isAuthenticated && (
+          {!isAuthor && isAuthenticated && (
             <Menu
               anchorEl={anchorAuthorEl}
               open={Boolean(anchorAuthorEl)}
@@ -128,7 +107,7 @@ function Publication(publication: IPublication): JSX.Element {
                 <MenuItem
                   key={`menu-item-author-menu-${option.text}`}
                   onClick={() => {
-                    option.onClick(author)
+                    option.onClick()
                     handleCloseAuthorOptions()
                   }}
                 >
@@ -140,7 +119,7 @@ function Publication(publication: IPublication): JSX.Element {
           <Typography>{author?.userName}</Typography>
         </Box>
 
-        {isAuthenticated && (
+        {isAuthenticated && publicationOption.length > 0 && (
           <IconButton onClick={handleOpenPublicationOptions}>
             <MoreVertIcon />
           </IconButton>
@@ -154,7 +133,7 @@ function Publication(publication: IPublication): JSX.Element {
             <MenuItem
               key={`menu-item-publication-menu-${option.text}`}
               onClick={() => {
-                option.onClick(publication)
+                option.onClick()
                 handleClosePublicationOptions()
               }}
             >
@@ -178,36 +157,48 @@ function Publication(publication: IPublication): JSX.Element {
       {Boolean(images.length) && (
         <ImageLayout images={images.map((img) => img.urlString)} />
       )}
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px',
-          marginTop: 4
-        }}
-      >
-        {isAuthenticated && <MakeComment publicationId={id} />}
-        {showComments &&
-          comments?.map((comment) => (
-            <Comment
-              comment={comment}
-              key={`publication-${id}-comment-${comment.id}`}
-            />
-          ))}
-        <Box
-          component="button"
-          onClick={handleShowComments}
-          sx={{
-            color: 'layout.indigoDye',
-            background: 'transparent',
-            cursor: 'pointer',
-            border: 'none',
-            margin: '8px 0'
-          }}
-        >
-          {commentBtnText}
-        </Box>
-      </Box>
+
+      {isAuthenticated && (
+        <>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: {
+                md: 'flex-start',
+                xs: 'center'
+              },
+              gap: '20px',
+              margin: '20px 0 0 0',
+              '& > button': {
+                background: 'transparent',
+                border: 'none',
+                '&:hover': {
+                  cursor: 'pointer'
+                }
+              },
+              '& p': {
+                fontSize: '10px'
+              }
+            }}
+          >
+            <Box component="button" onClick={handleAddToFavorites}>
+              <HeartIcon width={22} height={22} />
+              <Typography>Guardar</Typography>
+            </Box>
+            <Box component="button" onClick={() => setShowComments(true)}>
+              <CommentIcon width={22} height={22} />
+              <Typography>Comentar</Typography>
+            </Box>
+            {!isAuthor && (
+              <Box component="button" onClick={handleReportPublication}>
+                <FlagIcon width={22} height={22} />
+                <Typography>Reportar</Typography>
+              </Box>
+            )}
+          </Box>
+          {showComments && <AllComments publicationId={id} />}
+        </>
+      )}
     </Paper>
   )
 }

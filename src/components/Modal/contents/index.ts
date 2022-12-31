@@ -1,3 +1,4 @@
+export { default as ImagesCarousel } from './ImagesCarousel'
 export { default as MakePublication } from './MakePublication'
 export { default as Report } from './Report'
 export { default as UpdateUserInfo } from './UpdateUserInfo'

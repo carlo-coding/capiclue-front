@@ -168,7 +168,9 @@ function Messages(): JSX.Element {
             sx={{
               flexGrow: 1,
               overflowY: 'auto',
-              maxHeight: 'calc(100vh - 150px)'
+              maxHeight: 'calc(100vh - 140px)',
+              padding: '20px',
+              backgroundColor: 'layout.mintCream'
             }}
           >
             <InverseLazyLoad
@@ -208,11 +210,13 @@ function Messages(): JSX.Element {
               padding: '17px',
               display: 'flex',
               gap: '10px',
-              alignItems: 'center'
+              alignItems: 'center',
+              backgroundColor: 'layout.mintCream'
             }}
           >
             <TextField
               placeholder="Escribe algo ..."
+              autoComplete="false"
               onChange={handleInputChange}
               value={messageContent}
             />

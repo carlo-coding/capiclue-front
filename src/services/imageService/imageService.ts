@@ -1,5 +1,6 @@
+import imageCompression from 'browser-image-compression'
 import { IImageModel } from '../../models/imageModel'
-import { checkError, getCookie } from '../../utils'
+import { checkError, getCookie, validateImage } from '../../utils'
 import { ImageServiceEndpoints } from './endpoints'
 
 const apiUrl = import.meta.env.VITE_API_URL as string
@@ -16,9 +17,11 @@ export async function serviceUploadAvatar(
   let result: IUploadAvatarResponse | null = null
   let error: Error | null = null
   try {
+    const validImage = await validateImage(file)
+
     const token = getCookie('token')
     const formData = new FormData()
-    formData.append('avatar', file)
+    formData.append('avatar', validImage)
     const response = await fetch(
       `${apiUrl}${ImageServiceEndpoints.UPLOAD_AVATAR}`,
       {
@@ -29,7 +32,9 @@ export async function serviceUploadAvatar(
         body: formData
       }
     )
-    result = await checkError<IUploadAvatarResponse>(response)
+    result = await checkError<IUploadAvatarResponse>(response, {
+      413: 'La imagen es muy grande'
+    })
   } catch (err) {
     error = err as Error
   }
@@ -59,9 +64,12 @@ export async function serviceUploadPublicationImages(
     }
     const token = getCookie('token')
     const formData = new FormData()
-    data.files.forEach((file) => {
-      formData.append('images', file)
-    })
+    await Promise.all(
+      data.files.map(async (file) => {
+        const validImage = await validateImage(file)
+        formData.append('images', validImage)
+      })
+    )
     const response = await fetch(
       `${apiUrl}${ImageServiceEndpoints.UPLOAD_PUBLICATION_IMAGES}${data.publicationId}`,
       {
@@ -72,7 +80,9 @@ export async function serviceUploadPublicationImages(
         body: formData
       }
     )
-    result = await checkError<IUploadPublicationImagesResponse>(response)
+    result = await checkError<IUploadPublicationImagesResponse>(response, {
+      413: 'La imagen es muy grande'
+    })
   } catch (err) {
     error = err as Error
   }

@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { getNotifications, readNotifications } from '../../features'
 import { PrivateRoutes, PublicRoutes } from '../../models'
+import { ExploreSearchInput } from '../ExploreSearchInput'
 import { LazyLoad } from '../LazyLoad'
 import { Notification } from '../Notification'
 import { StandardButton } from '../StandardButton'
@@ -76,9 +77,11 @@ function Header(): JSX.Element {
 
   return (
     <AppBar
-      position="static"
+      position="fixed"
       sx={{
-        boxShadow: 'none'
+        boxShadow: 'none',
+        borderBottom: '1px solid',
+        borderColor: 'layout.carolinaBlue'
       }}
     >
       <Container
@@ -110,6 +113,21 @@ function Header(): JSX.Element {
             >
               Explorar
             </Typography>
+          </Box>
+
+          <Box
+            sx={{
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '0 100px',
+              display: {
+                md: 'flex',
+                xs: 'none'
+              }
+            }}
+          >
+            <ExploreSearchInput />
           </Box>
 
           {isAuthenticated ? (
@@ -189,6 +207,7 @@ function Header(): JSX.Element {
                   </LazyLoad>
                 </List>
               </Popover>
+              )
               <Menu
                 anchorEl={anchorElUser}
                 anchorOrigin={{
@@ -218,7 +237,7 @@ function Header(): JSX.Element {
             </Box>
           ) : (
             <StandardButton
-              sx={{ width: '160px' }}
+              sx={{ width: '180px' }}
               onClick={() => {
                 navigate(`/${PublicRoutes.SIGNUP}`)
               }}

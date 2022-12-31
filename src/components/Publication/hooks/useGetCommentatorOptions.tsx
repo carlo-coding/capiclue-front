@@ -1,30 +1,46 @@
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch } from '../../../app/hooks'
 import { sendFriendRequest } from '../../../features'
+import { makeReport } from '../../../features/report/reportActions'
 import { IOption, PrivateRoutes, TUserPartial } from '../../../models'
 import { Report } from '../../Modal'
 import { openModal, setModalContent } from '../../Modal/redux/modalSlice'
 
-export const useGetCommentatorOptions = (author: TUserPartial): IOption[] => {
+export const useGetCommentatorOptions = (
+  commentator: TUserPartial
+): IOption[] => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
-  if (author.isFriend !== undefined && author.isFriend) {
+  if (commentator.isFriend !== undefined && commentator.isFriend) {
     return [
       {
         text: 'Mandar mensaje',
         onClick: () => {
           navigate(
             `/${PrivateRoutes.PRIVATE}/${PrivateRoutes.MESSAGES}?id=${
-              author.id as number
+              commentator.id as number
             }`
           )
         }
       },
       {
         text: 'Reportar',
-        onClick: (commentId: number): void => {
-          dispatch(setModalContent(<Report cb={() => {}} />))
+        onClick: (): void => {
+          dispatch(
+            setModalContent(
+              <Report
+                cb={(content) => {
+                  dispatch(
+                    makeReport({
+                      content,
+                      reportedUserId: commentator.id
+                    })
+                  )
+                }}
+              />
+            )
+          )
           dispatch(openModal())
         }
       }
@@ -34,13 +50,26 @@ export const useGetCommentatorOptions = (author: TUserPartial): IOption[] => {
     {
       text: 'Mandar solicitud de amistad',
       onClick: () => {
-        dispatch(sendFriendRequest(author.id as number))
+        dispatch(sendFriendRequest(commentator.id as number))
       }
     },
     {
       text: 'Reportar',
-      onClick: (commentId: number): void => {
-        dispatch(setModalContent(<Report cb={() => {}} />))
+      onClick: (): void => {
+        dispatch(
+          setModalContent(
+            <Report
+              cb={(content) => {
+                dispatch(
+                  makeReport({
+                    content,
+                    reportedUserId: commentator.id
+                  })
+                )
+              }}
+            />
+          )
+        )
         dispatch(openModal())
       }
     }

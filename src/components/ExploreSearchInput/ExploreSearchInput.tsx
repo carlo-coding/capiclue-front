@@ -1,16 +1,16 @@
 import { TextField, Tabs, Tab, IconButton } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
-import React, { useState } from 'react'
-import { useGetOptions } from '../ExploreSidebar/hooks/useGetOptions'
+import React, { useEffect, useState } from 'react'
+import { useGetOptions } from '../../pages/Explore/components/ExploreSidebar/hooks/useGetOptions'
+import { useAppDispatch } from '../../app/hooks'
+import { setSearch } from './redux/SearchInputSlice'
+import { useNavigate } from 'react-router-dom'
+import { PublicRoutes } from '../../models'
 
-interface IExploreSearchInputProps {
-  setSearch: (s: string) => void
-}
-
-function ExploreSearchInput({
-  setSearch
-}: IExploreSearchInputProps): JSX.Element {
+function ExploreSearchInput(): JSX.Element {
   const options = useGetOptions()
+
+  const dispatch = useAppDispatch()
 
   const [valueTab, setValueTab] = useState(0)
   const handleChangeTabs = (
@@ -32,20 +32,26 @@ function ExploreSearchInput({
   }
 
   const [valueSearch, setValueSearch] = useState('')
+  const navigate = useNavigate()
+  useEffect(() => {
+    if (valueSearch !== '') {
+      navigate(`/${PublicRoutes.EXPLORE}?section=search`)
+    }
+  }, [valueSearch])
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setValueSearch(e.currentTarget.value)
   }
 
   const handleClickSearch = (): void => {
-    setSearch(valueSearch)
+    dispatch(setSearch(valueSearch))
   }
 
   const handleEnterSearch = (
     event: React.KeyboardEvent<HTMLDivElement>
   ): void => {
     if (event.key === 'Enter') {
-      setSearch(valueSearch)
+      dispatch(setSearch(valueSearch))
     }
   }
 

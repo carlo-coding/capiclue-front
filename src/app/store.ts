@@ -11,6 +11,7 @@ import {
 } from '../features'
 import { friendSlice } from '../features/friend'
 import { publicationSlice } from '../features/publication'
+import { SearchInputSlice } from '../pages'
 
 export const store = configureStore({
   reducer: {
@@ -22,7 +23,8 @@ export const store = configureStore({
     comment: commentSlice,
     notification: notificationSlice,
     chat: chatSlice,
-    count: countSlice
+    count: countSlice,
+    search: SearchInputSlice
   },
   middleware: [thunk]
 })

@@ -1,2 +1,2 @@
-export * from './ExploreSearchInput'
+export * from '../../../components/ExploreSearchInput'
 export * from './ExploreSidebar'

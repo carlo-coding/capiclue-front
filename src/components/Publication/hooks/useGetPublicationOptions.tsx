@@ -1,21 +1,19 @@
-import { useAppDispatch, useAppSelector } from '../../../app/hooks'
-import { addPublicationToFavorites, deletePublication } from '../../../features'
-import { IOption, IPublication, TPublicationPartial } from '../../../models'
-import { MakePublication, Report, UserConfirm } from '../../Modal'
+import { useAppDispatch } from '../../../app/hooks'
+import { deletePublication } from '../../../features'
+import { IOption, IPublication } from '../../../models'
+import { MakePublication, UserConfirm } from '../../Modal'
 import { openModal, setModalContent } from '../../Modal/redux/modalSlice'
 
-export const useGetPublicationOptions = (authorId: number): IOption[] => {
+export const useGetPublicationOptions = (
+  publication: IPublication,
+  isAuthor: boolean
+): IOption[] => {
   const dispatch = useAppDispatch()
-
-  const userId = useAppSelector((state) => state.user.info?.id)
-
-  let options: IOption[]
-
-  if (authorId === userId) {
-    options = [
+  if (isAuthor) {
+    return [
       {
         text: 'Eliminar',
-        onClick: (publication: TPublicationPartial): void => {
+        onClick: (): void => {
           dispatch(
             setModalContent(
               <UserConfirm
@@ -30,32 +28,15 @@ export const useGetPublicationOptions = (authorId: number): IOption[] => {
       },
       {
         text: 'Editar',
-        onClick: (publication: TPublicationPartial): void => {
+        onClick: (): void => {
           dispatch(
-            setModalContent(
-              <MakePublication publication={publication as IPublication} />
-            )
+            setModalContent(<MakePublication publication={publication} />)
           )
           dispatch(openModal())
         }
       }
     ]
   } else {
-    options = [
-      {
-        text: 'Guardar en favoritos',
-        onClick: (publication: TPublicationPartial): void => {
-          dispatch(addPublicationToFavorites(publication.id))
-        }
-      },
-      {
-        text: 'Reportar',
-        onClick: (publication: TPublicationPartial): void => {
-          dispatch(setModalContent(<Report cb={() => {}} />))
-          dispatch(openModal())
-        }
-      }
-    ]
+    return []
   }
-  return options
 }

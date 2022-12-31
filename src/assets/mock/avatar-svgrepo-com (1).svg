@@ -39,12 +39,12 @@
 			</g>
 			<g>
 				<g>
-					<path style="fill:none;stroke:#FFFFFF;stroke-width:1.4308;stroke-linecap:round;stroke-linejoin:round;" d="M62.374,104.678
+					<path style="fill:none;stroke:#FFFFFF;stroke-width:1.4308;strokeLinecap:round;stroke-linejoin:round;" d="M62.374,104.678
 						c0,0.009,0,0.017,0,0.025"/>
 					
-						<path style="fill:none;stroke:#FFFFFF;stroke-width:1.4308;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:0.0479,1.9175;" d="
+						<path style="fill:none;stroke:#FFFFFF;stroke-width:1.4308;strokeLinecap:round;stroke-linejoin:round;stroke-dasharray:0.0479,1.9175;" d="
 						M62.561,106.61c0.9,4.605,4.957,8.079,9.827,8.079c5.203,0,9.479-3.968,9.966-9.043"/>
-					<path style="fill:none;stroke:#FFFFFF;stroke-width:1.4308;stroke-linecap:round;stroke-linejoin:round;" d="M82.4,104.703
+					<path style="fill:none;stroke:#FFFFFF;stroke-width:1.4308;strokeLinecap:round;stroke-linejoin:round;" d="M82.4,104.703
 						c0-0.009,0-0.017,0-0.025"/>
 				</g>
 			</g>

@@ -29,7 +29,7 @@ function CustomModal(): JSX.Element {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 'min(90vw, 500px)',
+          width: 'min(90vw, 550px)',
           bgcolor: 'layout.babyPowder',
           boxShadow: 24,
           p: 4,

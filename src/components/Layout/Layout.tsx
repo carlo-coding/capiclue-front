@@ -20,7 +20,9 @@ function Layout({ children }: ILayoutProps): JSX.Element {
       sx={{
         minHeight: '100vh',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        paddingTop: '64px',
+        background: 'layout.mintCream'
       }}
     >
       <Header />

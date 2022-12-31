@@ -5,6 +5,7 @@ import { FriendBox } from '../FriendBox'
 import { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks'
 import { getAllFriends, getPublications } from '../../../../features'
+import { IPublication } from '../../../../models'
 
 function ProfileTabs(): JSX.Element {
   const [value, setValue] = useState(0)
@@ -74,10 +75,11 @@ function ProfileTabs(): JSX.Element {
           display: 'flex',
           flexDirection: 'column',
           width: '100%',
-          gap: '10px',
-          padding: '10px',
-          maxHeight: 'calc(100vh - 312px)',
-          overflowY: 'auto'
+          gap: '30px',
+          padding: {
+            md: '30px',
+            xs: '15px'
+          }
         }}
       >
         {value === 0 && (
@@ -104,7 +106,7 @@ function ProfileTabs(): JSX.Element {
           >
             {publications.map((publication, index) => (
               <Publication
-                {...publication}
+                {...(publication as IPublication)}
                 key={`profile-publication-box-${index}`}
               />
             ))}

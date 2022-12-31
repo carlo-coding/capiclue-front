@@ -1,26 +1,27 @@
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import { deleteComment } from '../../../features'
 import { setCommentEditContent } from '../../../features/comment/commentSlice'
+import { makeReport } from '../../../features/report/reportActions'
 import { IComment, IOption } from '../../../models'
 import { Report, UserConfirm } from '../../Modal'
 import { openModal, setModalContent } from '../../Modal/redux/modalSlice'
 
-export const useGetCommentOptions = (commentatorId?: number): IOption[] => {
+export const useGetCommentOptions = (comment: IComment): IOption[] => {
   const dispatch = useAppDispatch()
-
   const userInfo = useAppSelector((state) => state.user.info)
+  const commentatorId = comment.commentator.id
 
   if (userInfo?.id === commentatorId) {
     return [
       {
         text: 'Editar',
-        onClick: (comment: IComment): void => {
+        onClick: (): void => {
           dispatch(setCommentEditContent(comment))
         }
       },
       {
         text: 'Eliminar',
-        onClick: (comment: IComment): void => {
+        onClick: (): void => {
           dispatch(
             setModalContent(
               <UserConfirm
@@ -46,8 +47,21 @@ export const useGetCommentOptions = (commentatorId?: number): IOption[] => {
   return [
     {
       text: 'Reportar',
-      onClick: (commentId: number): void => {
-        dispatch(setModalContent(<Report cb={() => {}} />))
+      onClick: (): void => {
+        dispatch(
+          setModalContent(
+            <Report
+              cb={(content) => {
+                dispatch(
+                  makeReport({
+                    content,
+                    reportedCommentId: comment.id
+                  })
+                )
+              }}
+            />
+          )
+        )
         dispatch(openModal())
       }
     }

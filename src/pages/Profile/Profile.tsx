@@ -104,11 +104,13 @@ function Profile(): JSX.Element {
         }}
       >
         <ExploreSidebar />
+        <Box sx={{ display: { md: 'block', xs: 'none' } }}></Box>
         <Box
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center'
+            alignItems: 'center',
+            backgroundColor: 'layout.mintCream'
           }}
         >
           <Box

@@ -6,7 +6,7 @@ import { closeModal } from '../redux/modalSlice'
 import { useState } from 'react'
 
 interface IReportProps {
-  cb: () => void
+  cb: (content: string) => void
 }
 
 function Report({ cb }: IReportProps): JSX.Element {
@@ -18,7 +18,7 @@ function Report({ cb }: IReportProps): JSX.Element {
   }
 
   const handleReport = (): void => {
-    cb()
+    cb(comment)
     dispatch(closeModal())
   }
 

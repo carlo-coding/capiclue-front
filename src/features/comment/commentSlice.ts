@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { IComment } from '../../models'
 import { TCommentsOutput } from '../../services'
+import { obtenerObjetosUnicos } from '../../utils'
 
 export interface ICommentState {
   memory: {
@@ -36,7 +37,7 @@ const commentSlice = createSlice({
           ? (state.memory[publicationId]?.comments as IComment[])
           : ([] as IComment[])
       state.memory[publicationId] = {
-        comments: [...comments, ...action.payload.output.items],
+        comments: obtenerObjetosUnicos(comments, action.payload.output.items),
         totalItems: action.payload.output.meta.totalItems
       }
     },
@@ -48,7 +49,7 @@ const commentSlice = createSlice({
           : ([] as IComment[])
       state.memory[action.payload.publicationId] = {
         totalItems: state.memory[action.payload.publicationId]?.totalItems,
-        comments: [...comments, action.payload]
+        comments: obtenerObjetosUnicos(comments, [action.payload])
       }
     },
     removeComment(

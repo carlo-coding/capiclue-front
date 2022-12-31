@@ -12,8 +12,6 @@ export function validateSectionQuery(
     'search',
     'user'
   ]
-  if (search !== undefined && search?.length !== 0) return 'search'
-  if (section === undefined) return sections[0]
   if (sections.includes(section as TSections)) return section as TSections
   return sections[0]
 }

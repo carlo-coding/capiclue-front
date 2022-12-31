@@ -1,18 +1,48 @@
-import { Layout, StandardButton } from '../../components'
+import {
+  Layout,
+  openModal,
+  setModalContent,
+  StandardButton,
+  UserConfirm
+} from '../../components'
 import {
   Box,
-  Typography,
-  FormGroup,
+  Typography
+  /* FormGroup,
   FormControlLabel,
-  Checkbox
+  Checkbox */
 } from '@mui/material'
 import { ExploreSidebar } from '../Explore/components'
+import { useAppDispatch } from '../../app/hooks'
+import { resetPassword, userDelete } from '../../features'
 function Settings(): JSX.Element {
+  const dispatch = useAppDispatch()
+
+  const handleChangePassword = (): void => {
+    dispatch(resetPassword())
+  }
+
+  const handleDeleteAccount = (): void => {
+    dispatch(
+      setModalContent(
+        <UserConfirm
+          cb={() => {
+            dispatch(userDelete())
+          }}
+        >
+          Seguro que quieres eliminar tu cuenta?
+        </UserConfirm>
+      )
+    )
+    dispatch(openModal())
+  }
+
   return (
     <Layout>
       <Box
         sx={{
           display: 'grid',
+          backgroundColor: 'layout.mintCream',
           flexGrow: 1,
           gridTemplateColumns: {
             md: '300px 1fr',
@@ -20,6 +50,7 @@ function Settings(): JSX.Element {
           }
         }}
       >
+        <div></div>
         <ExploreSidebar />
         <Box
           sx={{
@@ -32,7 +63,7 @@ function Settings(): JSX.Element {
             }
           }}
         >
-          <Box>
+          {/* <Box>
             <Typography sx={{ fontSize: '20px', fontWeight: '600' }}>
               Silenciar Notificaciones
             </Typography>
@@ -54,12 +85,15 @@ function Settings(): JSX.Element {
                 label="Silenciar notificaciones del sistema "
               />
             </FormGroup>
-          </Box>
+          </Box> */}
           <Box>
             <Typography sx={{ fontSize: '20px', fontWeight: '600' }}>
               Cambiar Contraseña
             </Typography>
-            <StandardButton sx={{ width: 'max-content', padding: '10px' }}>
+            <StandardButton
+              sx={{ width: 'max-content', padding: '10px' }}
+              onClick={handleChangePassword}
+            >
               Click aqui para cambiar contraseña
             </StandardButton>
           </Box>
@@ -73,6 +107,7 @@ function Settings(): JSX.Element {
                 padding: '10px',
                 bgcolor: 'layout.rubyRed'
               }}
+              onClick={handleDeleteAccount}
             >
               Click aqui para borrar tu cuenta
             </StandardButton>

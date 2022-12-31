@@ -30,7 +30,7 @@ function Comment({ comment }: ICommentProps): JSX.Element {
 
   const commentatorOptions = useGetCommentatorOptions(comment.commentator)
 
-  const commentOptions = useGetCommentOptions(comment.commentator.id)
+  const commentOptions = useGetCommentOptions(comment)
 
   const handleOpenCommentatorOptions = (
     e: React.MouseEvent<HTMLElement>
@@ -102,7 +102,10 @@ function Comment({ comment }: ICommentProps): JSX.Element {
           {commentatorOptions.map((option) => (
             <MenuItem
               key={`menu-item-commentator-menu-${option.text}`}
-              onClick={() => option.onClick(comment.commentator)}
+              onClick={() => {
+                option.onClick()
+                handleCloseCommentatorOptions()
+              }}
             >
               {option.text}
             </MenuItem>
@@ -119,7 +122,7 @@ function Comment({ comment }: ICommentProps): JSX.Element {
             <MenuItem
               key={`menu-item-comment-menu-${option.text}`}
               onClick={() => {
-                option.onClick(comment)
+                option.onClick()
                 handleCloseCommentOptions()
               }}
             >

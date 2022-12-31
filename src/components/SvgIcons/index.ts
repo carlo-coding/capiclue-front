@@ -1,4 +1,7 @@
 export { default as ChatIcon } from './ChatIcon'
+export { default as CommentIcon } from './CommentIcon'
+export { default as FlagIcon } from './FlagIcon'
+export { default as HeartIcon } from './HeartIcon'
 export { default as NotificationIcon } from './NotificationIcon'
 export { default as SendIcon } from './SendIcon'
 export { default as SettingsIcon } from './SettingsIcon'

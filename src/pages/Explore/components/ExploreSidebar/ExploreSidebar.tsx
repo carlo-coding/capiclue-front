@@ -5,12 +5,16 @@ function ExploreSidebar(): JSX.Element {
   const options = useGetOptions()
 
   return (
-    <Container
+    <Box
       sx={{
         height: '100%',
+        width: '100%',
+        maxWidth: '300px',
         backgroundColor: 'layout.babyPowder',
-        borderRight: '2px solid',
-        borderColor: 'layout.carolinaBlue',
+        position: 'fixed',
+        left: 0,
+        bottom: 0,
+        top: '54px',
         display: {
           md: 'flex',
           xs: 'none'
@@ -26,7 +30,7 @@ function ExploreSidebar(): JSX.Element {
           flexDirection: 'column',
           alignItems: 'flex-start',
           gap: '30px',
-          margin: '30px'
+          margin: '60px'
         }}
       >
         {options.map((option) => (
@@ -45,7 +49,7 @@ function ExploreSidebar(): JSX.Element {
           </Box>
         ))}
       </Box>
-    </Container>
+    </Box>
   )
 }
 export default ExploreSidebar

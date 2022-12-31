@@ -3,7 +3,7 @@ import { Box } from '@mui/material'
 interface ITextAreaProps extends React.HTMLProps<HTMLTextAreaElement> {}
 
 function TextArea({
-  rows = 5,
+  rows = 7,
   placeholder = 'Escribe algo ...',
   ...props
 }: ITextAreaProps): JSX.Element {

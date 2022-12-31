@@ -61,8 +61,8 @@ function MakePublication({
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
     if (event.currentTarget.files == null) return
-    if (images.length + event.currentTarget.files.length > 3) {
-      enqueueSnackbar('Máximo 3 imagenes', {
+    if (images.length + event.currentTarget.files.length > 4) {
+      enqueueSnackbar('Máximo 4 imagenes', {
         variant: 'error'
       })
       return
@@ -82,6 +82,7 @@ function MakePublication({
   }
 
   const handlePostPublication = (): void => {
+    if (content.length === 0) return
     if (content.length > 500) {
       enqueueSnackbar('No puedes mandar más de 500 carácteres', {
         variant: 'error'
@@ -96,6 +97,8 @@ function MakePublication({
           publicationId: publication.id
         })
       )
+      setImages([])
+      setContent('')
       return
     }
     dispatch(
@@ -104,6 +107,8 @@ function MakePublication({
         images: files
       })
     )
+    setImages([])
+    setContent('')
   }
 
   return (
@@ -111,7 +116,7 @@ function MakePublication({
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '5px'
+        gap: '15px'
       }}
     >
       <Typography>
@@ -121,12 +126,18 @@ function MakePublication({
       </Typography>
       <TextArea value={content} onChange={chandleContentChange} />
       <ImageLayout
-        rowHeight="80px"
+        rowHeight="120px"
         images={imageUrls}
         onRemoveImage={handleUpdateImages}
         editable
       />
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Box
+        sx={{
+          gap: '15px',
+          display: 'flex',
+          justifyContent: 'flex-end'
+        }}
+      >
         <StandardButton
           sx={{ width: '50px', fontSize: '14px', padding: '8px' }}
           onClick={handleImageButtonClick}
