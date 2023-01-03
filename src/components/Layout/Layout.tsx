@@ -21,7 +21,10 @@ function Layout({ children }: ILayoutProps): JSX.Element {
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        paddingTop: '64px',
+        paddingTop: {
+          md: '64px',
+          xs: '52px'
+        },
         background: 'layout.mintCream'
       }}
     >

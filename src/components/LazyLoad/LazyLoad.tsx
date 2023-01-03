@@ -23,6 +23,10 @@ function LazyLoad({
   const showItems = children !== undefined && children?.length > 0
 
   useEffect(() => {
+    setCurrentPage(1)
+  }, [totalPages])
+
+  useEffect(() => {
     onEndReached(currentPage)
   }, [currentPage, ...dependencies])
 

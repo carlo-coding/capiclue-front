@@ -75,7 +75,7 @@ function ProfileTabs(): JSX.Element {
           display: 'flex',
           flexDirection: 'column',
           width: '100%',
-          gap: '30px',
+          gap: '10px',
           padding: {
             md: '30px',
             xs: '15px'

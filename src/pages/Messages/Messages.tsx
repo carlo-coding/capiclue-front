@@ -168,8 +168,14 @@ function Messages(): JSX.Element {
             sx={{
               flexGrow: 1,
               overflowY: 'auto',
-              maxHeight: 'calc(100vh - 140px)',
-              padding: '20px',
+              maxHeight: {
+                md: 'calc(100vh - 140px)',
+                xs: 'calc(100vh - 126px)'
+              },
+              padding: {
+                md: '20px',
+                xs: '20px 0 0 0'
+              },
               backgroundColor: 'layout.mintCream'
             }}
           >

@@ -58,10 +58,6 @@ export async function serviceUploadPublicationImages(
   let result: IUploadPublicationImagesResponse | null = null
   let error: Error | null = null
   try {
-    if (data.files.length === 0) {
-      result = { data: { images: [] } }
-      return [result, error]
-    }
     const token = getCookie('token')
     const formData = new FormData()
     await Promise.all(

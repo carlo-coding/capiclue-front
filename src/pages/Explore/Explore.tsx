@@ -36,6 +36,10 @@ function Explore(): JSX.Element {
           gridTemplateColumns: {
             md: '300px 1fr',
             xs: '1fr'
+          },
+          gridTemplateRows: {
+            md: 'none',
+            xs: '0 104px'
           }
         }}
       >
@@ -111,6 +115,7 @@ function Explore(): JSX.Element {
               <LazyLoad
                 totalPages={totalPublicationPages}
                 dependencies={[querySection, search.length]}
+                emptinessMessage="No hay publicaciones"
                 onEndReached={(page) =>
                   dispatch(
                     getPublications({

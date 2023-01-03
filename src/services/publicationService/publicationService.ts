@@ -251,7 +251,9 @@ export async function serviceAddPublicationToFavorites(
         }
       }
     )
-    const data = await checkError<TPublicationResponse>(response)
+    const data = await checkError<TPublicationResponse>(response, {
+      400: 'La publicación ya está en favoritos'
+    })
     result = {
       data: {
         publication: mapOnePublication(data.data.publication)
